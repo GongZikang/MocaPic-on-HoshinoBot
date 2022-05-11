@@ -2,10 +2,9 @@ import json
 import random
 import requests
 from nonebot.exceptions import CQHttpError
-from hoshino import R, Service, priv
+from hoshino import Service, priv
 from hoshino.util import FreqLimiter, DailyNumberLimiter
 import urllib.request
-import base64
 
 _max = 10
 EXCEED_NOTICE = f'您今天已经冲过{_max}次了，请明早5点后再来！'
@@ -20,7 +19,7 @@ nick_name = {"227": ["厄厄漆"],
              "遠藤ゆりか": ["有利息", "红发女人"],
              "大橋彩香": ["大桥彩香", "hego", "大桥", "桥儿"],
              "前島亜美": ["前岛亚美", "amt", "amita", "亚美"],
-             "上坂菫": ["政委", "同志"],
+             "上坂菫": ["政委", "同志", "上坂堇"],
              "中島由貴": ["中岛由贵", "由贵", "贵贵", "yuki", "yukki"],
              "伊藤美来": ["美来", "miku"],
              "明坂聡美": ["明坂聪美", "小明"],
@@ -85,6 +84,7 @@ nick_name = {"227": ["厄厄漆"],
              }
 
 
+# 防止和HoshinoBot自带的setu模块冲突
 @sv.on_rex(r"^(?:来点)([^色图]+)(?!色图)$")
 async def mocapic(bot, ev):
     """随机叫一份老婆图，对每个用户有冷却时间"""
@@ -119,9 +119,7 @@ async def mocapic(bot, ev):
     the_wife_data = json.loads(requests.get(url_encode).text)['files']
     pic_id = random.choice(the_wife_data)
     pic_url = 'https://acc.mocabot.cn/img.php?mode=file&name=' + name_encode + '&file=' + pic_id
-    res = requests.get(pic_url)
-    base64_str = 'base64://' + base64.b64encode(res.content).decode()
-    pic = f"[CQ:image,file={base64_str}]"
+    pic = f"[CQ:image,file={pic_url}]"
 
     try:
         await bot.send(ev, pic)
@@ -171,9 +169,7 @@ async def trimocapic(bot, ev):
     for i in range(0, 3):
         pic_id = random.choice(the_wife_data)
         pic_url = 'https://acc.mocabot.cn/img.php?mode=file&name=' + name_encode + '&file=' + pic_id
-        res = requests.get(pic_url)
-        base64_str = 'base64://' + base64.b64encode(res.content).decode()
-        pic = f"[CQ:image,file={base64_str}]"
+        pic = f"[CQ:image,file={pic_url}]"
         pic_list.append(pic)
 
     for img in pic_list:

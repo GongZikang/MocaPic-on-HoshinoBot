@@ -11,7 +11,8 @@ EXCEED_NOTICE = f'您今天已经冲过{_max}次了，请明早5点后再来！'
 _nlmt = DailyNumberLimiter(_max)
 _flmt = FreqLimiter(5)
 
-sv = Service('来点老婆', manage_priv=priv.SUPERUSER, enable_on_default=True, visible=True)
+help_text = "=======来点老婆功能说明=======\n指令：来点[老婆名] / 多来点[老婆名]\n本功能使用mocabot网站资源，详情见：image.mocabot.cn/\n老婆库主要为BanGDream!企划声优，此外的高人气声优也收录了一些。"
+sv = Service('来点老婆', manage_priv=priv.SUPERUSER, enable_on_default=False, visible=True, help_=help_text)
 
 nick_name = {"227": ["厄厄漆"],
              "愛美": ["爱美", "cdd", "aimi"],
@@ -163,11 +164,11 @@ async def trimocapic(bot, ev):
     name_encode = urllib.request.quote(wife_name, safe='/:?=&', encoding='utf-8')
     url_encode = 'https://image.mocabot.cn/data/imgs/' + name_encode + '.json'
     the_wife_data = json.loads(requests.get(url_encode).text)['files']
-
+    random.shuffle(the_wife_data)
     pic_list = []
     mes_list = []
     for i in range(0, 3):
-        pic_id = random.choice(the_wife_data)
+        pic_id = the_wife_data[i]
         pic_url = 'https://acc.mocabot.cn/img.php?mode=file&name=' + name_encode + '&file=' + pic_id
         pic = f"[CQ:image,file={pic_url}]"
         pic_list.append(pic)
